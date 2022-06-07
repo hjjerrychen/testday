@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TestDay</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/papaparse@5.3.2/papaparse.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+      <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path
+          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
+        />
+      </symbol>
+      <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path
+          d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+        />
+      </symbol>
+      <symbol
+        id="exclamation-triangle-fill"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="modal" tabindex="-1" id="verifyUploadModal">
+      <div
+        class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Verify data</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div
+              class="alert alert-danger d-none"
+              role="alert"
+              id="verifyDataError"
+            >
+              <h4 class="alert-heading">
+                <svg
+                  class="bi flex-shrink-0 me-2"
+                  width="24"
+                  height="24"
+                  role="img"
+                  aria-label="Danger:"
+                >
+                  <use xlink:href="#exclamation-triangle-fill" />
+                </svg>
+                There are errors in the uploaded data!
+              </h4>
+              <hr />
+              <p>
+                Please correct the errors for any rows highlighted in red and
+                re-upload the file before continuing. Reasons for errors are:
+              </p>
+              <ul>
+                <li>The <code>test_code</code> field is not valid.</li>
+                <li>
+                  The <code>lead</code> field must only contain
+                  <code>true</code>, <code>TRUE</code>, <code>false</code>, or
+                  <code>FALSE</code> for dances that have different Assessment
+                  Sheets for lead and follow. Otherwise, it can be also be
+                  empty.
+                </li>
+                <li>
+                  The <code>result</code> field must only contain
+                  <code>P</code> for Pass, <code>H</code> for Pass with Honours,
+                  <code>R</code> for Retry, <code>W</code> for Withdraw, or
+                  empty for Unknown.
+                </li>
+              </ul>
+            </div>
+
+            <div
+              class="alert alert-warning d-none"
+              role="alert"
+              id="verifyDataWarning"
+            >
+              <h4 class="alert-heading">
+                <svg
+                  class="bi flex-shrink-0 me-2"
+                  width="24"
+                  height="24"
+                  role="img"
+                  aria-label="Warning:"
+                >
+                  <use xlink:href="#exclamation-triangle-fill" />
+                </svg>
+                There are missing fields in the uploaded data!
+              </h4>
+              <hr />
+              <p>
+                Some rows highlighted yellow below are missing data. You do not
+                have to fix them, but information may be missing in any
+                generated reports. This includes any Diamond Dance entries with
+                missing
+                <code>coach</code> or <code>partner</code> fields, and any
+                entries with duplicate <code>id</code> fields.
+              </p>
+            </div>
+
+            <p>
+              <strong id="verifyUploadModalTableRowCount"></strong>
+            </p>
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">ID</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Skater</th>
+                  <th scope="col">Home Org</th>
+                  <th scope="col">Test</th>
+                  <th scope="col">Result</th>
+                  <th scope="col">Assessor</th>
+                  <th scope="col">Submitted</th>
+                  <th scope="col">Coach</th>
+                  <th scope="col">Partner</th>
+                </tr>
+              </thead>
+              <tbody id="verifyUploadModalTableBody"></tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container my-5">
+      <div class="text-center">
+        <h1>TestDay</h1>
+        <h4 class="text-muted">Figure Skating Assessment Tools</h4>
+      </div>
+
+      <div class="card m-4">
+        <div class="card-body">
+          <p class="card-text">
+            This site automatically generates Freeskate, Artistic, Skills,
+            Dance, and Synchro Assessment Sheets and Assessment Summary Sheets
+            required for Skate Canada STARSkate assessments.
+          </p>
+          <p class="card-text">
+            To protect your data, the information you provide is processed
+            locally and never leaves your device.
+          </p>
+          <p class="card-text">
+            This site is not affiliated, associated, endorsed or authorized
+            with/by Skate Canada. You are solely responsible for meeting any
+            Skate Canada requirements and regulations that may apply. This site
+            provides no warranty or liability, and you agree to use it at your
+            own risk.
+          </p>
+        </div>
+      </div>
+
+      <div class="card m-4">
+        <div class="card-body">
+          <h5 class="card-title">1. Upload assessment information</h5>
+          <p class="card-text">
+            Upload a CSV file containing details about the assessments. A
+            template with the required fields can be found
+            <a href="templates/entries_template.csv" class="link-secondary"
+              >here</a
+            >. You may add additional columns to the CSV, but the columns
+            specified in the template must be present and filled in.
+          </p>
+          <div>
+            <input
+              class="form-control form-control-lg"
+              type="file"
+              id="csv"
+              name="csv"
+              accept=".csv"
+            />
+            <div class="invalid-feedback">
+              The CSV file cannot be processed. Please upload a file in the
+              correct format.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card m-4">
+        <div class="card-body">
+          <h5 class="card-title">2. Enter additional information</h5>
+          <p class="card-text">
+            Additional information are required on some of the generated
+            reports. All the fields below are optional, and if left empty, will
+            appear empty in generated forms. However, they may be required by
+            Skate Canada, and can help with completeness and accuracy of the
+            reports.
+          </p>
+          <div>
+            <h6 class="card-subtitle mb-2 text-muted">
+              Assessment Event Information
+            </h6>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="eventName"
+                placeholder="Event Name"
+              />
+              <label for="eventName">Event Name</label>
+              <div id="eventNameHelp" class="form-text">
+                The assessment event name will be printed on the Assessment
+                Summary Sheet.
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-md">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="normalAssessmentFee"
+                    placeholder="Normal Assessment Fee"
+                    value="12.00"
+                  />
+                  <label for="normalAssessmentFee">Normal Assessment Fee</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="challengeAssessmentFee"
+                    placeholder="Challenge Assessment Fee"
+                    value="60.00"
+                  />
+                  <label for="challengeAssessmentFee">
+                    Challenge Assessment Fee
+                  </label>
+                </div>
+              </div>
+              <div id="assessmentFeeHelp" class="form-text">
+                These fees are mandated by Skate Canada depending on the type of
+                test taken.
+              </div>
+            </div>
+
+            <h6 class="card-subtitle mb-2 text-muted">
+              Organization / Skating Club / School Information
+            </h6>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="organizationName"
+                placeholder="Organization Name"
+              />
+              <label for="organizationName">Name</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="organizationSkateCanadaNumber"
+                placeholder="Skate Canada Number"
+              />
+              <label for="organizationSkateCanadaNumber"
+                >Skate Canada Number</label
+              >
+            </div>
+
+            <h6 class="card-subtitle mb-2 text-muted">
+              Organization / Skating Club / School's Assessment Coordinator
+              Information
+            </h6>
+
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="assessmentCoordinatorName"
+                placeholder="Name"
+              />
+              <label for="assessmentCoordinatorName">Name</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="assessmentCoordinatorSkateCanadaNumber"
+                placeholder="Skate Canada Number"
+              />
+              <label for="assessmentCoordinatorSkateCanadaNumber"
+                >Skate Canada Number</label
+              >
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="assessmentCoordinatorPhone"
+                placeholder="Phone Number"
+              />
+              <label for="assessmentCoordinatorPhone">Phone Number</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="email"
+                class="form-control"
+                id="assessmentCoordinatorEmail"
+                placeholder="Email"
+              />
+              <label for="assessmentCoordinatorEmail">Email</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card m-4">
+        <div class="card-body">
+          <h5 class="card-title">3. Generate Assessment Sheets</h5>
+          <p class="card-text">
+            These sheets are used by the Assessor on the day of the assessment.
+            Each Assessment Sheet will have a unique ID printed on the top right
+            or top left corner based on the ID provided in the CSV for easy
+            referencing.
+          </p>
+          <div
+            class="alert alert-warning d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Warning:"
+            >
+              <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <div>
+              If nothing appears to happen, please make sure pop-ups are
+              unblocked for this site. On Chrome, the blocked pop-up will appear
+              to the right of the address bar. Click the link to open the PDF.
+            </div>
+          </div>
+          <div>
+            <div class="dropdown" id="generateAssessmentSheetsButtonGroup">
+              <button
+                class="btn btn-secondary btn-lg dropdown-toggle"
+                type="button"
+                id="generateAssessmentSheets"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Export PDF
+              </button>
+              <ul
+                class="dropdown-menu"
+                aria-labelledby="generateAssessmentSheets"
+              >
+                <li>
+                  <a class="dropdown-item" id="allAssessmentSheets"
+                    >All Assessment Sheets</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" id="artisticAssessmentSheets"
+                    >Artistic Assessment Sheets</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" id="danceAssessmentSheets"
+                    >Dance Assessment Sheets</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" id="freeskateAssessmentSheets"
+                    >Freeskate Assessment Sheets</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" id="skillsAssessmentSheets"
+                    >Skills Assessment Sheets</a
+                  >
+                </li>
+
+                <li>
+                  <a class="dropdown-item" id="synchroAssessmentSheets"
+                    >Synchro Assessment Sheets</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="invalid-feedback">Please upload a CSV file first.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card m-4">
+        <div class="card-body">
+          <h5 class="card-title">4. Generate Assessment Summary Sheet</h5>
+          <p class="card-text">
+            These sheets are used to record the assessment results, and are sent
+            to Skate Canada for record updates (if not already done online).
+            Uploading a CSV with assessment results will produce Assessment
+            Summary Sheets with the result prechecked.
+          </p>
+          <div
+            class="alert alert-primary d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Info:"
+            >
+              <use xlink:href="#info-fill" />
+            </svg>
+            <div>
+              Challenge tests are placed on seperate pages. Those pages, along
+              with the top half of the corresponding Assessment Sheets, and
+              payment must be sent to Skate Canada by mail for manual entry.
+            </div>
+          </div>
+          <div
+            class="alert alert-warning d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Warning:"
+            >
+              <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <div>
+              If nothing appears to happen, please make sure pop-ups are
+              unblocked for this site. On Chrome, the blocked pop-up will appear
+              to the right of the address bar. Click the link to open the PDF.
+            </div>
+          </div>
+
+          <div>
+            <button
+              id="generateAssessmentSummarySheet"
+              type="button"
+              class="btn btn-secondary btn-lg"
+            >
+              Export PDF
+            </button>
+            <div class="invalid-feedback">Please upload a CSV file first.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card m-4">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3>TestDay</h3>
+              <h6 class="text-muted">Figure Skating Assessment Tools</h6>
+              <small>Version 0.0.1 (Jun 17, 2022)</small>
+            </div>
+            <div class="col-auto">
+              <a
+                href="mailto:testday@jerrychen.xyz?subject=TestDay%20App"
+                class="link-secondary"
+                >Email</a
+              >
+            </div>
+            <div class="col-auto">
+              <a
+                href="https://github.com/jerry70450/testday"
+                class="link-secondary"
+                >GitHub</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
