@@ -1,7 +1,7 @@
 
 const { PDFDocument, PDFName, PDFBool, PDFString, PDFTextField, StandardFonts } = PDFLib;
 
-const TEMPLATE_DIRECTORY_URL = "http://testday.jerrychen.xyz/templates";
+const TEMPLATE_DIRECTORY_URL = "https://testday.jerrychen.xyz/templates";
 
 const state = {};
 
