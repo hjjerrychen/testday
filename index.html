@@ -97,7 +97,7 @@
                 <li>
                   The <code>result</code> field must only contain
                   <code>P</code> for Pass, <code>H</code> for Pass with Honours,
-                  <code>R</code> for Retry, <code>W</code> for Withdraw, or
+                  <code>R</code> for Retry, <code>W</code> for Withdrawn, or
                   empty for Unknown.
                 </li>
               </ul>
@@ -184,7 +184,7 @@
             locally and never leaves your device.
           </p>
           <p class="card-text">
-            This site is not affiliated, associated, endorsed or authorized
+            This site is not affiliated, associated, endorsed, or authorized
             with/by Skate Canada. You are solely responsible for meeting any
             Skate Canada requirements and regulations that may apply. This site
             provides no warranty or liability, and you agree to use it at your
@@ -223,10 +223,10 @@
         <div class="card-body">
           <h5 class="card-title">2. Enter additional information</h5>
           <p class="card-text">
-            Additional information are required on some of the generated
+            Additional information is required on some of the generated
             reports. All the fields below are optional, and if left empty, will
             appear empty in generated forms. However, they may be required by
-            Skate Canada, and can help with completeness and accuracy of the
+            Skate Canada, and can help with the completeness and accuracy of the
             reports.
           </p>
           <div>
@@ -358,7 +358,8 @@
             These sheets are used by the Assessor on the day of the assessment.
             Each Assessment Sheet will have a unique ID printed on the top right
             or top left corner based on the ID provided in the CSV for easy
-            referencing.
+            referencing. Assessment Sheets will not be generated any entries
+            marked as 'Withdrawn'.
           </p>
           <div
             class="alert alert-warning d-flex align-items-center"
@@ -374,9 +375,10 @@
               <use xlink:href="#exclamation-triangle-fill" />
             </svg>
             <div>
-              If nothing appears to happen, please make sure pop-ups are
-              unblocked for this site. On Chrome, the blocked pop-up will appear
-              to the right of the address bar. Click the link to open the PDF.
+              This operation may take some time, depending on the number of
+              entries. If nothing appears to happen, please make sure pop-ups
+              are allowed for this site. In Chrome, the blocked pop-up can be
+              accessed by clicking the right of the address bar.
             </div>
           </div>
           <div>
@@ -438,7 +440,8 @@
             These sheets are used to record the assessment results, and are sent
             to Skate Canada for record updates (if not already done online).
             Uploading a CSV with assessment results will produce Assessment
-            Summary Sheets with the result prechecked.
+            Summary Sheets with the result prechecked. Assessment Summary Sheets
+            will not include any entries marked as 'Withdrawn'.
           </p>
           <div
             class="alert alert-primary d-flex align-items-center"
@@ -454,9 +457,9 @@
               <use xlink:href="#info-fill" />
             </svg>
             <div>
-              Challenge tests are placed on seperate pages. Those pages, along
-              with the top half of the corresponding Assessment Sheets, and
-              payment must be sent to Skate Canada by mail for manual entry.
+              Challenge tests will be placed on separate pages. Those pages,
+              along with the top half of the corresponding Assessment Sheets,
+              and payment must be sent to Skate Canada by mail for manual entry.
             </div>
           </div>
           <div
@@ -473,12 +476,12 @@
               <use xlink:href="#exclamation-triangle-fill" />
             </svg>
             <div>
-              If nothing appears to happen, please make sure pop-ups are
-              unblocked for this site. On Chrome, the blocked pop-up will appear
-              to the right of the address bar. Click the link to open the PDF.
+              This operation may take some time, depending on the number of
+              entries. If nothing appears to happen, please make sure pop-ups
+              are allowed for this site. In Chrome, the blocked pop-up can be
+              accessed by clicking the right of the address bar.
             </div>
           </div>
-
           <div>
             <button
               id="generateAssessmentSummarySheet"

@@ -114,15 +114,6 @@ function main() {
 
     const generateAssessmentSheetsButtonGroup = document.querySelector("#generateAssessmentSheetsButtonGroup");
     const generateAssessmentSheetsButton = document.querySelector("#generateAssessmentSheets");
-    // generateAssessmentSheetsButton.addEventListener("click", async event => {
-    //     if (!state.entries) {
-    //         generateAssessmentSheetsButtonGroup.classList.add("is-invalid");
-    //         return;
-    //     }
-    //     buttonLoading(generateAssessmentSheetsButton);
-    //     await generateTestSheets(state.entries, organizationNameField.value);
-    //     restoreButton(generateAssessmentSheetsButton);
-    // });
 
     async function generateAssessmentSheets(filter) {
         new bootstrap.Dropdown(document.querySelector('#generateAssessmentSheets')).hide()
@@ -131,7 +122,7 @@ function main() {
             return;
         }
         buttonLoading(generateAssessmentSheetsButton);
-        await generateTestSheets(filter(state.entries), organizationNameField.value);
+        await generateTestSheets(filter(state.entries.filter(entry => entry.result !== "W")), organizationNameField.value);
         restoreButton(generateAssessmentSheetsButton);
     }
 
@@ -196,7 +187,7 @@ function main() {
             "H": `<span class="badge bg-success">Honours</span>`,
             "P": `<span class="badge bg-success">Pass</span>`,
             "R": `<span class="badge bg-danger">Retry</span>`,
-            "W": `<span class="badge bg-dark">Withdraw</span>`,
+            "W": `<span class="badge bg-dark">Withdrawn</span>`,
             "": `<span class="badge bg-secondary">Unknown</span>`
         }
 
