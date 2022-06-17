@@ -1,6 +1,8 @@
 
 const { PDFDocument, PDFName, PDFBool, PDFString, PDFTextField, StandardFonts } = PDFLib;
 
+const TEMPLATE_DIRECTORY_URL = "http://testday.jerrychen.xyz/templates";
+
 const state = {};
 
 const testSheetFileNameByCode = {
@@ -335,7 +337,7 @@ async function generateTestSheet(entry, host_org_name) {
             throw Error(`Missing lead/follow property for entry \n${Object.values(entry)}`);
         }
 
-        return generateDiamondDanceSheet(id, `templates/${fileName}`, date, candidate_name, assessor_name, candidate_home_org_name, host_org_name, coach_name, partner_name, lead);
+        return generateDiamondDanceSheet(id, fileName, date, candidate_name, assessor_name, candidate_home_org_name, host_org_name, coach_name, partner_name, lead);
     }
 
     if (!testSheetFileNameByCode[test_code]) {
@@ -350,11 +352,11 @@ async function generateTestSheet(entry, host_org_name) {
         }
     }
 
-    return generateNormalTestSheet(id, `templates/${fileName}`, date, candidate_name, candidate_sc_num, assessor_name, candidate_home_org_name);
+    return generateNormalTestSheet(id, fileName, date, candidate_name, candidate_sc_num, assessor_name, candidate_home_org_name);
 };
 
 async function generateDiamondDanceSheet(id, form_location, date, candidate_name, assessor_name, candidate_home_org_name, host_org_name, coach_name, partner_name, lead = false) {
-    const testSheet = await fetch(`https://jerry70450.github.io/testday/${form_location}`)
+    const testSheet = await fetch(`${TEMPLATE_DIRECTORY_URL}/${form_location}`)
     const testSheetArrayBuffer = await testSheet.arrayBuffer()
     const testSheetPDF = await PDFDocument.load(testSheetArrayBuffer)
     const testSheetPDFForm = testSheetPDF.getForm()
@@ -407,7 +409,7 @@ async function generateDiamondDanceSheet(id, form_location, date, candidate_name
 };
 
 async function generateNormalTestSheet(id, form_location, date, candidate_name, candidate_sc_num, assessor_name, candidate_home_org_name) {
-    const testSheet = await fetch(`https://jerry70450.github.io/testday/${form_location}`)
+    const testSheet = await fetch(`${TEMPLATE_DIRECTORY_URL}/${form_location}`)
     const testSheetArrayBuffer = await testSheet.arrayBuffer()
     const testSheetPDF = await PDFDocument.load(testSheetArrayBuffer)
     const testSheetPDFForm = testSheetPDF.getForm()
@@ -511,7 +513,7 @@ async function generateTestSummarySheets(entries, title, normal_test_fee, challe
 async function generateTestSummarySheet(entries, test_fee, page_num, total_pages, title, org_name, org_sc_num,
     assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email) {
 
-    const assessmentSummarySheet = await fetch("https://jerry70450.github.io/testday/templates/Test_Summary_Sheet_Jul_2020.pdf")
+    const assessmentSummarySheet = await fetch(`${TEMPLATE_DIRECTORY_URL}/Test_Summary_Sheet_Jul_2020.pdf`)
     const assessmentSummarySheetArrayBuffer = await assessmentSummarySheet.arrayBuffer();
     const accessmentSummarySheetPDF = await PDFDocument.load(assessmentSummarySheetArrayBuffer)
     const accessmentSummarySheetForm = accessmentSummarySheetPDF.getForm()
