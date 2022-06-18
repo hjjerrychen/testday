@@ -64,6 +64,23 @@
           </div>
           <div class="modal-body">
             <div
+              class="alert alert-primary d-flex align-items-center"
+              role="alert"
+            >
+              <svg
+                class="bi flex-shrink-0 me-2"
+                width="24"
+                height="24"
+                role="img"
+                aria-label="Info:"
+              >
+                <use xlink:href="#info-fill" />
+              </svg>
+              <div>
+                Please ensure your CSV file was processed corectly before continuing.
+              </div>
+            </div>
+            <div
               class="alert alert-danger d-none"
               role="alert"
               id="verifyDataError"
@@ -141,11 +158,11 @@
                   <th scope="col">ID</th>
                   <th scope="col">Date</th>
                   <th scope="col">Skater</th>
-                  <th scope="col">Home Org</th>
+                  <th scope="col">Home Organization</th>
                   <th scope="col">Test</th>
                   <th scope="col">Result</th>
                   <th scope="col">Assessor</th>
-                  <th scope="col">Submitted</th>
+                  <th scope="col">Skate Canada Submitted</th>
                   <th scope="col">Coach</th>
                   <th scope="col">Partner</th>
                 </tr>
@@ -224,10 +241,8 @@
           <h5 class="card-title">2. Enter additional information</h5>
           <p class="card-text">
             Additional information is required on some of the generated reports.
-            All the fields below are optional, and if left empty, will appear
-            empty in generated forms. However, they may be required by Skate
-            Canada, and can help with the completeness and accuracy of the
-            reports.
+            All the fields below are optional, and if left empty, will also
+            appear empty in generated forms.
           </p>
           <div>
             <h6 class="card-subtitle mb-2 text-muted">
@@ -306,8 +321,7 @@
             </div>
 
             <h6 class="card-subtitle mb-2 text-muted">
-              Organization / Skating Club / School's Assessment Coordinator
-              Information
+              Assessment Coordinator Information
             </h6>
 
             <div class="form-floating mb-3">
@@ -375,8 +389,8 @@
               <use xlink:href="#info-fill" />
             </svg>
             <div>
-              Using Chrome, Adobe Reader or Acrobat Reader on a desktop computer
-              is recommended for reports to render correctly.
+              Using Chrome or Adobe Reader on a desktop computer is recommended
+              for reports to render correctly.
             </div>
           </div>
           <div
@@ -393,11 +407,11 @@
               <use xlink:href="#exclamation-triangle-fill" />
             </svg>
             <div>
-              This operation may take some time, depending on the number of
-              entries. If nothing appears to happen, please make sure pop-ups
-              are allowed for this site. In Chrome, the blocked pop-up can be
-              accessed by clicking the right of the address bar. Otherwise,
-              generating the same report twice can bypass pop-up blocking.
+              Make sure pop-up blocking is off. This operation may take some
+              time. If nothing appears to happen, you may also generate the
+              report a second time to bypass pop-up blocking. In Chrome, the
+              blocked pop-up can be accessed by clicking the right of the
+              address bar.
             </div>
           </div>
           <div>
@@ -448,7 +462,9 @@
                 </li>
               </ul>
             </div>
-            <div class="invalid-feedback">Please upload a CSV file first.</div>
+            <div class="invalid-feedback">
+              Please upload assessment information first.
+            </div>
           </div>
         </div>
       </div>
@@ -457,10 +473,10 @@
           <h5 class="card-title">4. Generate Assessment Summary Sheet</h5>
           <p class="card-text">
             These sheets are used to record the assessment results, and are sent
-            to Skate Canada for record updates (if not already done online).
-            Uploading a CSV with assessment results will produce Assessment
-            Summary Sheets with the result prechecked. Assessment Summary Sheets
-            will not include any entries marked as 'Withdrawn'.
+            to Skate Canada for record updates (if not already submitted
+            online). Uploading a CSV with assessment results will produce
+            Assessment Summary Sheets with the result prechecked. Assessment
+            Summary Sheets will not include any entries marked as 'Withdrawn'.
           </p>
           <div
             class="alert alert-primary d-flex align-items-center"
@@ -481,24 +497,7 @@
               and payment must be sent to Skate Canada by mail for manual entry.
             </div>
           </div>
-          <div
-            class="alert alert-primary d-flex align-items-center"
-            role="alert"
-          >
-            <svg
-              class="bi flex-shrink-0 me-2"
-              width="24"
-              height="24"
-              role="img"
-              aria-label="Info:"
-            >
-              <use xlink:href="#info-fill" />
-            </svg>
-            <div>
-              Using Chrome, Adobe Reader or Acrobat Reader on a desktop computer
-              is recommended for reports to render correctly.
-            </div>
-          </div>
+
           <div
             class="alert alert-warning d-flex align-items-center"
             role="alert"
@@ -513,11 +512,11 @@
               <use xlink:href="#exclamation-triangle-fill" />
             </svg>
             <div>
-              This operation may take some time, depending on the number of
-              entries. If nothing appears to happen, please make sure pop-ups
-              are allowed for this site. In Chrome, the blocked pop-up can be
-              accessed by clicking the right of the address bar. Otherwise,
-              generating the same report twice can bypass pop-up blocking.
+              Make sure pop-up blocking is off. This operation may take some
+              time. If nothing appears to happen, you may also generate the
+              report a second time to bypass pop-up blocking. In Chrome, the
+              blocked pop-up can be accessed by clicking the right of the
+              address bar.
             </div>
           </div>
 
@@ -529,7 +528,9 @@
             >
               Export PDF
             </button>
-            <div class="invalid-feedback">Please upload a CSV file first.</div>
+            <div class="invalid-feedback">
+              Please upload assessment information first.
+            </div>
           </div>
         </div>
       </div>
