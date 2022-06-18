@@ -3,7 +3,7 @@ const { PDFDocument, PDFName, PDFBool, PDFString, PDFTextField, StandardFonts } 
 
 const TEMPLATE_DIRECTORY_URL = "https://testday.jerrychen.xyz/templates";
 
-const state = {};
+const state = { cache: {} };
 
 const testSheetFileNameByCode = {
     "S1D": "Dance_STAR_1_Dance_Elements_Assessment_Sheets_EN_NEW.pdf",
@@ -115,45 +115,57 @@ function main() {
     const generateAssessmentSheetsButtonGroup = document.querySelector("#generateAssessmentSheetsButtonGroup");
     const generateAssessmentSheetsButton = document.querySelector("#generateAssessmentSheets");
 
-    async function generateAssessmentSheets(filter) {
+    async function generateAssessmentSheets(cacheKey, filter) {
         new bootstrap.Dropdown(document.querySelector('#generateAssessmentSheets')).hide()
         if (!state.entries) {
             generateAssessmentSheetsButtonGroup.classList.add("is-invalid");
             return;
         }
         buttonLoading(generateAssessmentSheetsButton);
-        await generateTestSheets(filter(state.entries.filter(entry => entry.result !== "W")), organizationNameField.value);
+        if (state.cache?.[cacheKey]) {
+            window.open(state.cache[cacheKey]);
+        }
+        else {
+            await generateTestSheets(filter(state.entries.filter(entry => entry.result !== "W")), organizationNameField.value, cacheKey);
+        }
         restoreButton(generateAssessmentSheetsButton);
     }
 
     const allAssessmentSheetsButton = document.querySelector("#allAssessmentSheets");
-    allAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets(entries => entries.filter(() => true)));
+    allAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets("all", entries => entries.filter(() => true)));
 
     const artisticAssessmentSheetsButton = document.querySelector("#artisticAssessmentSheets");
-    artisticAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets(entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).endsWith("A") && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
+    artisticAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets("artistic", entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).endsWith("A") && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
 
     const danceAssessmentSheetsButton = document.querySelector("#danceAssessmentSheets");
-    danceAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets(entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).endsWith("D") || isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
+    danceAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets("dance", entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).endsWith("D") || isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
 
     const freeskateAssessmentSheetsButton = document.querySelector("#freeskateAssessmentSheets");
-    freeskateAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets(entries => entries.filter(entry => (testCodeWithoutChallenge(entry.test_code).endsWith("FS") || testCodeWithoutChallenge(entry.test_code).endsWith("FSE") || testCodeWithoutChallenge(entry.test_code).endsWith("FSP")) && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
+    freeskateAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets("freeskate", entries => entries.filter(entry => (testCodeWithoutChallenge(entry.test_code).endsWith("FS") || testCodeWithoutChallenge(entry.test_code).endsWith("FSE") || testCodeWithoutChallenge(entry.test_code).endsWith("FSP")) && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
 
     const skillsAssessmentSheetsButton = document.querySelector("#skillsAssessmentSheets");
-    skillsAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets(entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).endsWith("S") && !testCodeWithoutChallenge(entry.test_code).endsWith("FS") && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
+    skillsAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets("skills", entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).endsWith("S") && !testCodeWithoutChallenge(entry.test_code).endsWith("FS") && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
 
     const synchroAssessmentSheetsButton = document.querySelector("#synchroAssessmentSheets");
-    synchroAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets(entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).startsWith("SYS") && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
+    synchroAssessmentSheetsButton.addEventListener("click", async () => generateAssessmentSheets("synchro", entries => entries.filter(entry => testCodeWithoutChallenge(entry.test_code).startsWith("SYS") && !isDiamondDance(testCodeWithoutChallenge(entry.test_code)))));
 
     const generateAssessmentSummarySheetButton = document.querySelector("#generateAssessmentSummarySheet");
     generateAssessmentSummarySheetButton.addEventListener("click", async event => {
+        const cacheKey = "summary";
+
         if (!state.entries) {
             generateAssessmentSummarySheetButton.classList.add("is-invalid");
             return;
         }
         buttonLoading(generateAssessmentSummarySheetButton);
-        await generateTestSummarySheets(state.entries, eventNameField.value, parseFloat(normalAssessmentFeeField.value), parseFloat(challengeAssessmentFeeField.value),
-            organizationNameField.value, organizationSkateCanadaNumberField.value, assessmentCoordinatorNameField.value,
-            assessmentCoordinatorSkateCanadaNumberField.value, assessmentCoordinatorPhoneField.value, assessmentCoordinatorEmailField.value);
+        if (state.cache?.[cacheKey]) {
+            window.open(state.cache[cacheKey]);
+        }
+        else {
+            await generateTestSummarySheets(state.entries, eventNameField.value, parseFloat(normalAssessmentFeeField.value), parseFloat(challengeAssessmentFeeField.value),
+                organizationNameField.value, organizationSkateCanadaNumberField.value, assessmentCoordinatorNameField.value,
+                assessmentCoordinatorSkateCanadaNumberField.value, assessmentCoordinatorPhoneField.value, assessmentCoordinatorEmailField.value, cacheKey);
+        }
         restoreButton(generateAssessmentSummarySheetButton);
 
     });
@@ -164,6 +176,7 @@ function main() {
     filePicker.addEventListener("click", () => {
         filePicker.value = "";
         delete state.entries;
+        state.cache = {};
         filePicker.classList.remove("is-invalid");
         filePicker.classList.remove("is-valid");
         generateAssessmentSheetsButtonGroup.classList.remove("is-invalid");
@@ -256,6 +269,7 @@ function main() {
 
         if (fileFormatError) {
             delete state.entries;
+            state.cache = {};
             document.querySelector("#verifyDataError").classList.remove("d-none");
             filePicker.classList.add("is-invalid");
         }
@@ -302,7 +316,7 @@ async function parseCsv(file) {
     });
 }
 
-async function generateTestSheets(entries, host_org_name) {
+async function generateTestSheets(entries, host_org_name, cacheKey) {
     const testSheets = await PDFDocument.create();
     for (const entry of entries) {
         const testSheet = await generateTestSheet(entry, host_org_name)
@@ -316,6 +330,9 @@ async function generateTestSheets(entries, host_org_name) {
 
     const file = new Blob([await testSheets.save()], { type: 'application/pdf' });
     const fileURL = URL.createObjectURL(file);
+    if (cacheKey) {
+        state.cache[cacheKey] = fileURL;
+    }
     window.open(fileURL);
 }
 
@@ -463,7 +480,7 @@ async function generateNormalTestSheet(id, form_location, date, candidate_name, 
 
 
 async function generateTestSummarySheets(entries, title, normal_test_fee, challenge_test_fee, org_name, org_sc_num,
-    assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email) {
+    assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email, cacheKey) {
 
     const combinedTestSummarySheets = await PDFDocument.create();
 
@@ -498,6 +515,9 @@ async function generateTestSummarySheets(entries, title, normal_test_fee, challe
 
     const file = new Blob([await combinedTestSummarySheets.save()], { type: 'application/pdf' });
     const fileURL = URL.createObjectURL(file);
+    if (cacheKey) {
+        state.cache[cacheKey] = fileURL;
+    }
     window.open(fileURL);
 };
 

@@ -223,10 +223,10 @@
         <div class="card-body">
           <h5 class="card-title">2. Enter additional information</h5>
           <p class="card-text">
-            Additional information is required on some of the generated
-            reports. All the fields below are optional, and if left empty, will
-            appear empty in generated forms. However, they may be required by
-            Skate Canada, and can help with the completeness and accuracy of the
+            Additional information is required on some of the generated reports.
+            All the fields below are optional, and if left empty, will appear
+            empty in generated forms. However, they may be required by Skate
+            Canada, and can help with the completeness and accuracy of the
             reports.
           </p>
           <div>
@@ -362,6 +362,24 @@
             marked as 'Withdrawn'.
           </p>
           <div
+            class="alert alert-primary d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Info:"
+            >
+              <use xlink:href="#info-fill" />
+            </svg>
+            <div>
+              Using Chrome, Adobe Reader or Acrobat Reader on a desktop computer
+              is recommended for reports to render correctly.
+            </div>
+          </div>
+          <div
             class="alert alert-warning d-flex align-items-center"
             role="alert"
           >
@@ -378,7 +396,8 @@
               This operation may take some time, depending on the number of
               entries. If nothing appears to happen, please make sure pop-ups
               are allowed for this site. In Chrome, the blocked pop-up can be
-              accessed by clicking the right of the address bar.
+              accessed by clicking the right of the address bar. Otherwise,
+              generating the same report twice can bypass pop-up blocking.
             </div>
           </div>
           <div>
@@ -463,6 +482,24 @@
             </div>
           </div>
           <div
+            class="alert alert-primary d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Info:"
+            >
+              <use xlink:href="#info-fill" />
+            </svg>
+            <div>
+              Using Chrome, Adobe Reader or Acrobat Reader on a desktop computer
+              is recommended for reports to render correctly.
+            </div>
+          </div>
+          <div
             class="alert alert-warning d-flex align-items-center"
             role="alert"
           >
@@ -479,9 +516,11 @@
               This operation may take some time, depending on the number of
               entries. If nothing appears to happen, please make sure pop-ups
               are allowed for this site. In Chrome, the blocked pop-up can be
-              accessed by clicking the right of the address bar.
+              accessed by clicking the right of the address bar. Otherwise,
+              generating the same report twice can bypass pop-up blocking.
             </div>
           </div>
+
           <div>
             <button
               id="generateAssessmentSummarySheet"
