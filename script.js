@@ -101,16 +101,29 @@ window.onload = main;
 
 function main() {
     const eventNameField = document.querySelector("#eventName");
+    eventNameField.oninput = clearSummaryCache;
     const normalAssessmentFeeField = document.querySelector("#normalAssessmentFee");
+    normalAssessmentFeeField.oninput = clearSummaryCache;
     const challengeAssessmentFeeField = document.querySelector("#challengeAssessmentFee");
+    challengeAssessmentFeeField.oninput = clearSummaryCache;
+
 
     const organizationNameField = document.querySelector("#organizationName");
+    organizationNameField.oninput = () => state.cache = {};
     const organizationSkateCanadaNumberField = document.querySelector("#organizationSkateCanadaNumber");
+    organizationSkateCanadaNumberField.oninput = clearSummaryCache;
 
     const assessmentCoordinatorNameField = document.querySelector("#assessmentCoordinatorName");
+    assessmentCoordinatorNameField.oninput = clearSummaryCache;
+
     const assessmentCoordinatorSkateCanadaNumberField = document.querySelector("#assessmentCoordinatorSkateCanadaNumber");
+    assessmentCoordinatorSkateCanadaNumberField.oninput = clearSummaryCache;
+
     const assessmentCoordinatorPhoneField = document.querySelector("#assessmentCoordinatorPhone");
+    assessmentCoordinatorPhoneField.oninput = clearSummaryCache;
+
     const assessmentCoordinatorEmailField = document.querySelector("#assessmentCoordinatorEmail");
+    assessmentCoordinatorEmailField.oninput = clearSummaryCache;
 
     const generateAssessmentSheetsButtonGroup = document.querySelector("#generateAssessmentSheetsButtonGroup");
     const generateAssessmentSheetsButton = document.querySelector("#generateAssessmentSheets");
@@ -279,6 +292,10 @@ function main() {
     });
 
 };
+
+function clearSummaryCache() {
+    delete state.cache.summary;
+}
 
 function testCodeWithoutChallenge(testCode) {
     return testCode.substring(0, testCode.lastIndexOf('-')).trim() || testCode
