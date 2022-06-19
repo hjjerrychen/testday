@@ -192,6 +192,8 @@ function main() {
         state.cache = {};
         filePicker.classList.remove("is-invalid");
         filePicker.classList.remove("is-valid");
+        document.querySelector("#verifyDataWarning").classList.add("d-none");
+        document.querySelector("#verifyDataError").classList.add("d-none");
         generateAssessmentSheetsButtonGroup.classList.remove("is-invalid");
         generateAssessmentSummarySheetButton.classList.remove("is-invalid");
     })
