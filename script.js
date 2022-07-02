@@ -236,7 +236,7 @@ function main() {
             const validResult = ["", "P", "H", "R", "W"].includes(entry.result);
             const entryError = !(entry.result in resultBadgeHTML && validTestCode && validLeadValue && validLeadValueForTestCode && validResult);
 
-            const formFieldsEmpty = (entry.id && entry.date && entry.name && entry.sc_num && entry.assessor_name && entry.assessor_sc_num && entry.home_org && entry.home_org_sc_num) === "" || idSet.has(entry.id);
+            const formFieldsEmpty = (entry.id && entry["date(dd/mm/yyyy)"] && entry.name && entry.sc_num && entry.assessor_name && entry.assessor_sc_num && entry.home_org && entry.home_org_sc_num) === "" || idSet.has(entry.id);
             const entryWarning = isDiamondDance(entry.test_code) ? formFieldsEmpty || (entry.partner && entry.coach) === "" : formFieldsEmpty;
 
             idSet.add(entry.id);
