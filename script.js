@@ -231,8 +231,7 @@ function main() {
 
             const validTestCode = entry.test_code in testSheetFileNameByCode || `${entry.test_code}-L` in testSheetFileNameByCode || `${entry.test_code}-F` in testSheetFileNameByCode;
             const validLeadValue = ["TRUE", "true", "FALSE", "false", ""].includes(entry.lead);
-            const validLeadValueForTestCode = (entry.test_code in testSheetFileNameByCode && entry.lead === "" && !isDiamondDance(entry.test_code)) ||
-                ((isDiamondDance(entry.test_code) || `${entry.test_code}-F` in testSheetFileNameByCode || `${entry.test_code}-L` in testSheetFileNameByCode) && entry.lead !== "");
+            const validLeadValueForTestCode = ((entry.lead === "" && !isDance(entry.test_code)) || (isDance(entry.test_code) && entry.lead !== ""));
             const validResult = ["", "P", "H", "R", "W"].includes(entry.result);
             const entryError = !(entry.result in resultBadgeHTML && validTestCode && validLeadValue && validLeadValueForTestCode && validResult);
 
@@ -307,6 +306,10 @@ function isDiamondDance(testCode) {
     return testSheetFileNameByCode[testCode]?.includes("Diamond-Dance");
 }
 
+function isDance(testCode) {
+    return testSheetFileNameByCode[testCode]?.includes("Dance") || testSheetFileNameByCode[`${testCode}-L`]?.includes("Dance") || testSheetFileNameByCode[`${testCode}-F`]?.includes("Dance");
+}
+
 function buttonLoading(button) {
     button.disabled = true;
     button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...`;
@@ -371,7 +374,7 @@ async function generateTestSheet(entry, host_org_name) {
         if (lead === "true" || lead === "TRUE") {
             fileName = testSheetFileNameByCode[`${test_code}-L`]
         }
-        else if (lead === "false" || lead == "false") {
+        else if (lead === "false" || lead == "FALSE") {
             fileName = testSheetFileNameByCode[`${test_code}-F`]
         }
         else {
