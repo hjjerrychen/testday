@@ -516,8 +516,9 @@ async function generateTestSummarySheets(entries, title, normal_test_fee, challe
 
     for (let i = 0; i < normalTests.length; i += entriesPerPage) {
         const entriesForTestSummarySheet = normalTests.slice(i, i + entriesPerPage)
-        const testSummarySheet = await generateTestSummarySheet(entriesForTestSummarySheet, normal_test_fee, (i + 10) / 10, totalPages, title, org_name, org_sc_num,
-            assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email)
+        const currentPageNumber = (i + 10) / 10
+        const testSummarySheet = await generateTestSummarySheet(currentPageNumber, entriesForTestSummarySheet, normal_test_fee, currentPageNumber, totalPages,
+            title, org_name, org_sc_num, assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email)
         const copiedTestSummarySheetPages = await combinedTestSummarySheets.copyPages(testSummarySheet, [0])
         for (const page of copiedTestSummarySheetPages) {
             combinedTestSummarySheets.addPage(page)
@@ -526,8 +527,21 @@ async function generateTestSummarySheets(entries, title, normal_test_fee, challe
 
     for (let i = 0; i < challengeTests.length; i += entriesPerPage) {
         const entriesForTestSummarySheet = challengeTests.slice(i, i + entriesPerPage)
-        const testSummarySheet = await generateTestSummarySheet(entriesForTestSummarySheet, challenge_test_fee, (totalPagesNormalTests * 10 + i + 10) / 10, totalPages, title, org_name, org_sc_num,
-            assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email)
+        const currentPageNumber = (totalPagesNormalTests * 10 + i + 10) / 10
+        const testSummarySheet = await generateTestSummarySheet(currentPageNumber, entriesForTestSummarySheet, challenge_test_fee, currentPageNumber, totalPages,
+            title, org_name, org_sc_num, assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email)
+        const copiedTestSummarySheetPages = await combinedTestSummarySheets.copyPages(testSummarySheet, [0])
+        for (const page of copiedTestSummarySheetPages) {
+            combinedTestSummarySheets.addPage(page)
+        }
+    }
+
+    for (let i = 0; i < challengeTests.length; i += entriesPerPage) {
+        const entriesForTestSummarySheet = challengeTests.slice(i, i + entriesPerPage)
+        const currentPageID = (totalPagesNormalTests * 10 + totalPagesChallengeTests * 10 + i + 10) / 10
+        const currentPageNumber = (i + 10) / 10
+        const testSummarySheet = await generateTestSummarySheet(currentPageID, entriesForTestSummarySheet, challenge_test_fee, currentPageNumber, totalPagesChallengeTests,
+            "**Skate Canada Copy**", org_name, org_sc_num, assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email, false)
         const copiedTestSummarySheetPages = await combinedTestSummarySheets.copyPages(testSummarySheet, [0])
         for (const page of copiedTestSummarySheetPages) {
             combinedTestSummarySheets.addPage(page)
@@ -543,8 +557,8 @@ async function generateTestSummarySheets(entries, title, normal_test_fee, challe
     window.open(fileURL);
 };
 
-async function generateTestSummarySheet(entries, test_fee, page_num, total_pages, title, org_name, org_sc_num,
-    assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email) {
+async function generateTestSummarySheet(page_id, entries, test_fee, page_num, total_pages, title, org_name, org_sc_num,
+    assessment_coordinator_name, assessment_coordinator_sc_num, assessment_coordinator_phone, assessment_coordinator_email, add_test_id = true) {
 
     const assessmentSummarySheet = await fetch(`${TEMPLATE_DIRECTORY_URL}/Test_Summary_Sheet_Jul_2020.pdf`)
     const assessmentSummarySheetArrayBuffer = await assessmentSummarySheet.arrayBuffer();
@@ -567,7 +581,7 @@ async function generateTestSummarySheet(entries, test_fee, page_num, total_pages
         accessmentSummarySheetForm.getTextField(`untitled${(testCount % 10) * 2 + 8}`).setText(candidate_name)
         accessmentSummarySheetForm.getTextField(`untitled${(testCount % 10) * 2 + 27}`).setText(candidate_home_org_name)
         accessmentSummarySheetForm.getTextField(`untitled${(testCount % 10) * 2 + 28}`).setText(candidate_home_org_name_sc_num)
-        accessmentSummarySheetForm.getTextField(`untitled${(testCount % 10) + 88}`).setText(`${test_code}  (#${id})`)
+        accessmentSummarySheetForm.getTextField(`untitled${(testCount % 10) + 88}`).setText(test_code + (add_test_id ? ` (#${id})` : ""))
         accessmentSummarySheetForm.getTextField(`untitled${66 - (testCount % 10) * 2}`).setText(assessor_sc_num)
         accessmentSummarySheetForm.getTextField(`untitled${65 - (testCount % 10) * 2}`).setText(assessor_name)
         accessmentSummarySheetForm.getTextField(`untitled${87 - (testCount % 10) * 2}`).setText(date)
@@ -609,7 +623,7 @@ async function generateTestSummarySheet(entries, test_fee, page_num, total_pages
     // rename fields with id
     const accessmentSummarySheetFormFields = accessmentSummarySheetForm.getFields()
     accessmentSummarySheetFormFields.forEach(field => {
-        field.acroField.dict.set(PDFName.of("T"), PDFString.of(`${page_num}_${field.getName()}`))
+        field.acroField.dict.set(PDFName.of("T"), PDFString.of(`${page_id}_${field.getName()}`))
     });
 
     return accessmentSummarySheetPDF;
